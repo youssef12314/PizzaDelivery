@@ -19,7 +19,7 @@ const deliveryPoints = {
 
 // Function to calculate distance using Haversine formula
 function calculateDistance(coord1, coord2) {
-    const R = 6371; // Radius of Earth in km
+    const R = 6371; 
     const dLat = (coord2.lat - coord1.lat) * (Math.PI / 180);
     const dLon = (coord2.lng - coord1.lng) * (Math.PI / 180);
     const a =
@@ -27,10 +27,9 @@ function calculateDistance(coord1, coord2) {
         Math.cos(coord1.lat * (Math.PI / 180)) * Math.cos(coord2.lat * (Math.PI / 180)) *
         Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Distance in km
+    return R * c; 
 }
 
-// Create the graph dynamically
 function createGraph() {
     const graph = {};
     const points = Object.keys(deliveryPoints);
@@ -132,17 +131,13 @@ document.getElementById('find-route').addEventListener('click', function () {
                     L.marker([coords.lat, coords.lng]).addTo(map).bindPopup(name).openPopup();
                 });
 
-                // Create the graph
                 const graph = createGraph();
 
-                // Run Dijkstra's algorithm starting from 'Pizza Place'
                 const { distances, previous } = dijkstra(graph, 'Pizza Place');
 
-                // Find the path from 'Pizza Place' to the user's typed address
                 const route = [];
                 let current = userAddress;
 
-                // Backtrack to find the route from the user's typed address to 'Pizza Place'
                 while (current !== null) {
                     route.unshift(current);
                     current = previous[current]; 
@@ -151,7 +146,6 @@ document.getElementById('find-route').addEventListener('click', function () {
                 // Ensure route includes all delivery addresses
                 const includeAddresses = Object.keys(deliveryPoints).filter(address => address !== userAddress && address !== 'Pizza Place');
                 includeAddresses.forEach(address => {
-                    // Check if the address is already in the route
                     if (!route.includes(address)) {
                         const addressDistance = distances[address];
                         const yourLocationDistance = distances[userAddress];
@@ -187,17 +181,18 @@ document.getElementById('find-route').addEventListener('click', function () {
                     smoothFactor: 1
                 }).addTo(map);
 
+
                 // Update distance display with distances between each node
-                let totalDistance = 0; // Initialize total distance
+                let totalDistance = 0; 
                 const distanceText = `Shortest route: ${route.join(' -> ')}<br>Distances:<br>`;
                 const distancesBetweenPoints = [];
 
                 for (let i = 0; i < route.length - 1; i++) {
                     const from = route[i];
                     const to = route[i + 1];
-                    const distance = graph[from][to]; // Get distance from the graph
+                    const distance = graph[from][to];
                     distancesBetweenPoints.push(`${from} to ${to}: ${distance.toFixed(2)} km`);
-                    totalDistance += distance; // Update total distance
+                    totalDistance += distance; 
                 }
 
                 const distanceDetails = distancesBetweenPoints.join('<br>') + `<br><strong>Total Distance: ${totalDistance.toFixed(2)} km</strong>`;
